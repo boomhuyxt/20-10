@@ -1,0 +1,138 @@
+/* Cài đặt chung */
+body {
+    background-color: #000; /* Nền đen */
+    font-family: Arial, sans-serif;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Ẩn các thanh cuộn */
+    margin: 0;
+    position: relative;
+}
+
+/* Nút bấm ban đầu */
+#trigger-link {
+    font-size: 2rem;
+    color: #fff;
+    text-decoration: none;
+    padding: 15px 30px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    z-index: 10; /* Đảm bảo nút ở trên cùng */
+}
+
+#trigger-link:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Container chứa các trái tim và chữ */
+#main-content {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none; /* Ban đầu ẩn hoàn toàn */
+    overflow: hidden; 
+}
+
+#main-content.active {
+    display: block; /* Hiện khi active */
+}
+
+/* Dòng chữ "chúc mừng 20/10" */
+#text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 3rem; 
+    font-weight: bold;
+    text-shadow: 0 0 15px #ff69b4, 0 0 25px #ff69b4; 
+    text-align: center;
+    opacity: 0; /* Ban đầu ẩn */
+    animation: fadeIn 2s ease-out forwards 1s; /* Hiện dần sau 1s */
+    z-index: 5; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -70%); } 
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* CSS cho một trái tim */
+.heart {
+    position: absolute;
+    width: 50px; 
+    height: 50px;
+    background-color: #ff4757; 
+    transform: rotate(-45deg); 
+    opacity: 0; 
+    animation: shootUpAndRotate 3s ease-out forwards; 
+}
+
+.heart::before,
+.heart::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #ff4757;
+    border-radius: 50%; 
+}
+
+.heart::before {
+    top: -25px; 
+    left: 0;
+}
+
+.heart::after {
+    top: 0;
+    left: 25px; 
+}
+
+/* Animation bắn trái tim từ dưới lên và quay từ trái sang phải */
+@keyframes shootUpAndRotate {
+    0% {
+        bottom: -10%; 
+        left: var(--start-left); 
+        opacity: 0;
+        transform: rotate(-45deg);
+    }
+    20% {
+        opacity: 1; 
+    }
+    100% {
+        bottom: 100%; 
+        left: var(--end-left); 
+        opacity: 0; 
+        transform: rotate(45deg); /* Quay từ -45deg đến 45deg */
+    }
+}
+
+/* ---- PHẦN PHÁO HOA ---- */
+.firework {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ff69b4; /* Màu hồng */
+    border-radius: 50%;
+    opacity: 0;
+    animation: burst 1.5s ease-out forwards;
+}
+
+@keyframes burst {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+        box-shadow: 0 0 10px 5px #ff69b4, 0 0 20px 10px #ff69b4;
+    }
+    100% {
+        transform: scale(3) translateY(-50px); /* Phóng to và bay lên một chút */
+        opacity: 0;
+        box-shadow: none;
+    }
+}
