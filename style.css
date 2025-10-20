@@ -21,7 +21,6 @@ body {
     transition: all 0.3s ease;
     z-index: 1000;
 }
-
 #trigger-link:hover {
     background-color: #fff;
     color: #000;
@@ -37,13 +36,11 @@ body {
     display: none;
     overflow: hidden; 
 }
-
 #main-content.active {
     display: block;
 }
 
-/* --- SỬA LỖI HIỂN THỊ CHỮ --- */
-/* Container chung cho chữ */
+/* --- HIỂN THỊ CHỮ --- */
 #text-container {
     position: absolute;
     top: 50%;
@@ -51,32 +48,27 @@ body {
     transform: translate(-50%, -50%);
     color: #fff;
     text-align: center;
-    opacity: 0; /* Ban đầu ẩn */
+    opacity: 0;
     animation: 
-        fadeIn 2s ease-out forwards 2.5s, /* Hiện sau 2.5s (như các hiệu ứng cũ) */
+        fadeIn 2s ease-out forwards 2.5s, /* Hiện sau 2.5s */
         glowingText 2.5s ease-in-out infinite 2.5s;
     z-index: 500;
-    width: 100%; 
+    width: 95%; /* Tối ưu cho mobile */
 }
-
-/* Dòng chữ chính */
 #main-text {
-    font-size: 3.5rem; 
+    font-size: 3rem; 
     font-weight: bold;
     margin: 0;
     text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4, 0 0 40px #ff00de;
 }
-
-/* Dòng chữ phụ (CLUBTEAM) */
 #sub-text {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: normal;
     margin-top: 15px; 
     text-shadow: 0 0 10px #ff69b4;
     opacity: 0.9;
 }
 
-/* Keyframes cho chữ (để hiệu ứng phát sáng hoạt động) */
 @keyframes fadeIn {
     from { opacity: 0; transform: translate(-50%, -70%); } 
     to { opacity: 1; transform: translate(-50%, -50%); }
@@ -87,7 +79,7 @@ body {
     100% { text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4, 0 0 40px #ff00de; }
 }
 
-/* --- TRÁI TIM (Hiệu ứng "nở" và xoay) --- */
+/* --- TRÁI TIM (Loại 1: "Nở" và Xoay) --- */
 .heart {
     position: absolute;
     width: 60px;
@@ -112,21 +104,12 @@ body {
 .heart.purple { --heart-color: #9400d3; }
 .heart.gold { --heart-color: #ffd700; }
 .heart::before { top: -30px; left: 0; }
-.heart::after { top: 0; left: 30px; }
+.heart::after { top: 0, left: 30px; }
 
-/* Animation "nở" và xoay (để script.js gọi) */
 @keyframes popAndFlyUp {
-    0% {
-        transform: rotate(-45deg) scale(0);
-        opacity: 0;
-    }
-    30% {
-        transform: rotate(-45deg) scale(1.2); 
-        opacity: 1;
-    }
-    40% {
-        transform: rotate(-45deg) scale(1); 
-    }
+    0% { transform: rotate(-45deg) scale(0); opacity: 0; }
+    30% { transform: rotate(-45deg) scale(1.2); opacity: 1; }
+    40% { transform: rotate(-45deg) scale(1); }
     100% {
         top: -10%; 
         left: var(--end-left); 
@@ -135,31 +118,52 @@ body {
     }
 }
 
-/* --- PHÁO HOA RỰC RỠ (Với tia sáng phụ) --- */
+/* --- TRÁI TIM (Loại 2: "Trôi" lơ lửng) - PHẦN BỊ THIẾU CỦA BẠN --- */
+.heart.heart-drift {
+    animation: driftAndRise var(--animation-duration) linear forwards;
+    filter: brightness(0.9) blur(1px); 
+    width: 50px; 
+    height: 50px;
+}
+.heart.heart-drift::before { 
+    width: 50px; height: 50px; top: -25px; 
+}
+.heart.heart-drift::after { 
+    width: 50px; height: 50px; left: 25px; 
+}
+
+/* Animation cho trái tim trôi */
+@keyframes driftAndRise {
+    0% {
+        bottom: -10%; 
+        top: unset; 
+        left: var(--start-left);
+        opacity: 0;
+        transform: rotate(-45deg) scale(0.8);
+    }
+    20% {
+        opacity: 0.7; 
+    }
+    100% {
+        bottom: 100%; 
+        top: unset;
+        left: var(--end-left); 
+        opacity: 0;
+        transform: rotate(-25deg) scale(1.2); 
+    }
+}
+
+
+/* --- PHÁO HOA (Đã giảm nhẹ) --- */
 .firework {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     opacity: 0;
-    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 10%, rgba(255,255,255,0) 70%);
-    animation: 
-        burst 2.5s ease-out forwards,
-        flicker 0.2s infinite alternate;
+    animation: burst 2s ease-out forwards;
     z-index: 10;
 }
-
-/* Tia sáng phụ (để script.js gọi) */
-.firework-spark {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    opacity: 0;
-    animation: spark var(--spark-duration) ease-out forwards;
-}
-
-/* Các màu pháo hoa */
 .firework.pink { --firework-color: #ff69b4; }
 .firework.yellow { --firework-color: #ffd700; }
 .firework.blue { --firework-color: #1e90ff; }
@@ -170,47 +174,23 @@ body {
 
 @keyframes burst {
     0% {
-        transform: scale(0);
-        opacity: 1;
+        transform: scale(0); opacity: 1;
         box-shadow: 
-            0 0 30px 15px var(--firework-color), 
-            0 0 60px 30px var(--firework-color),
-            0 0 90px 45px rgba(255, 255, 255, 0.7),
-            0 0 120px 60px rgba(255, 255, 255, 0.4);
+            0 0 20px 10px var(--firework-color), 
+            0 0 40px 20px var(--firework-color),
+            0 0 60px 30px rgba(255, 255, 255, 0.5);
         background-color: var(--firework-color);
     }
-    50% {
-        opacity: 1;
-        transform: scale(2.5) translateY(-50px);
-    }
+    70% { opacity: 1; }
     100% {
-        transform: scale(5) translateY(-100px);
+        transform: scale(3) translateY(-80px); 
         opacity: 0;
         box-shadow: none;
         background-color: transparent;
     }
 }
 
-@keyframes flicker {
-    0% { filter: brightness(1); }
-    100% { filter: brightness(1.5); }
-}
-
-/* Animation tia sáng (để script.js gọi) */
-@keyframes spark {
-    0% {
-        transform: scale(0) translate(0,0);
-        background-color: var(--firework-color);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1) translate(var(--spark-x), var(--spark-y));
-        background-color: var(--firework-color);
-        opacity: 0;
-    }
-}
-
-/* --- HOA & CÁNH HOA (Hiệu ứng "nở" ra) --- */
+/* --- HOA & CÁNH HOA --- */
 .flower, .petal {
     position: absolute;
     opacity: 0;
@@ -220,8 +200,6 @@ body {
     left: var(--start-left);
     animation: popAndFall var(--animation-duration) linear forwards;
 }
-
-/* Bông hoa 4 cánh */
 .flower {
     width: 45px;
     height: 45px;
@@ -245,7 +223,6 @@ body {
 .flower.yellow-petal { background-color: #ffff00; --flower-color: #ffff00; }
 .flower.white { background-color: #ffffff; --flower-color: #ffffff; }
 
-/* Cánh hoa */
 .petal {
     width: 20px;
     height: 30px;
@@ -255,23 +232,55 @@ body {
 .petal.white { background-color: #ffffff; }
 .petal.light-red { background-color: #ff7979; }
 
-/* Keyframe "Nở" ra và Rơi (để script.js gọi) */
 @keyframes popAndFall {
-    0% {
-        transform: rotate(0deg) scale(0);
-        opacity: 0;
-    }
-    30% {
-        transform: rotate(var(--initial-rotation)) scale(1.2);
-        opacity: 1;
-    }
-    40% {
-        transform: rotate(var(--initial-rotation)) scale(1); 
-    }
+    0% { transform: rotate(0deg) scale(0); opacity: 0; }
+    30% { transform: rotate(var(--initial-rotation)) scale(1.2); opacity: 1; }
+    40% { transform: rotate(var(--initial-rotation)) scale(1); }
     100% {
         top: 110%; 
         left: var(--end-left);
         transform: rotate(var(--final-rotation)) scale(0.5); 
         opacity: 0;
+    }
+}
+
+/* --- TỐI ƯU HÓA CHO ĐIỆN THOẠI --- */
+@media (max-width: 600px) {
+    #trigger-link {
+        font-size: 1.5rem;
+        padding: 12px 24px;
+    }
+    #main-text {
+        font-size: 2.2rem; /* Thu nhỏ chữ chính */
+    }
+    #sub-text {
+        font-size: 1.4rem; /* Thu nhỏ chữ phụ */
+        margin-top: 10px;
+    }
+    .heart {
+        width: 40px;
+        height: 40px;
+    }
+    .heart::before { 
+        width: 40px; height: 40px; top: -20px; 
+    }
+    .heart::after { 
+        width: 40px; height: 40px; left: 20px; 
+    }
+
+    .heart.heart-drift {
+        width: 35px;
+        height: 35px;
+    }
+    .heart.heart-drift::before { 
+        width: 35px; height: 35px; top: -17px; 
+    }
+    .heart.heart-drift::after { 
+        width: 35px; height: 35px; left: 17px; 
+    }
+
+    .flower {
+        width: 35px;
+        height: 35px;
     }
 }

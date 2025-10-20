@@ -15,7 +15,7 @@ const heartColors = ['default', 'pink', 'purple', 'gold']; // 'default' là màu
 const petalColors = ['pink', 'white', 'light-red'];
 
 
-// Hàm tạo một trái tim
+// Hàm tạo một trái tim (Loại 1: Nở và Xoay)
 function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart');
@@ -46,7 +46,38 @@ function createHeart() {
     });
 }
 
-// Hàm tạo pháo hoa (bản rực rỡ)
+// HÀM MỚI: Tạo trái tim (Loại 2: Trôi lơ lửng)
+function createDriftingHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart'); // Dùng chung class .heart
+    heart.classList.add('heart-drift'); // Thêm class mới để đổi animation
+    
+    const randomColorClass = heartColors[Math.floor(Math.random() * heartColors.length)];
+    if (randomColorClass !== 'default') {
+        heart.classList.add(randomColorClass);
+    }
+    
+    // Vị trí trôi
+    const startLeft = Math.random() * 80 + 10;
+    const endLeft = startLeft + (Math.random() * 60 - 30); // Trôi ngang 
+    
+    heart.style.setProperty('--start-left', startLeft + '%');
+    heart.style.setProperty('--end-left', endLeft + '%');
+
+    const delay = Math.random() * 3; // Delay nhiều hơn
+    const duration = 6 + Math.random() * 4; // Bay chậm hơn
+    heart.style.animationDelay = delay + 's';
+    heart.style.animationDuration = duration + 's';
+
+    heartsContainer.appendChild(heart); // Thêm vào cùng container
+
+    heart.addEventListener('animationend', () => {
+        heart.remove();
+    });
+}
+
+
+// Hàm tạo pháo hoa (ĐÃ BỎ BỚT)
 function createFirework() {
     const firework = document.createElement('div');
     firework.classList.add('firework');
@@ -62,42 +93,14 @@ function createFirework() {
 
     fireworksContainer.appendChild(firework);
 
-    // Tạo nhiều tia sáng phụ bay ra từ tâm pháo hoa
-    const numSparks = 8 + Math.floor(Math.random() * 8); // 8 đến 15 tia
-    for (let i = 0; i < numSparks; i++) {
-        const spark = document.createElement('div');
-        spark.classList.add('firework-spark'); 
-        
-        // Lấy màu từ CSS variable (đã gán ở class)
-        const sparkColor = getComputedStyle(firework).getPropertyValue('--firework-color');
-        spark.style.backgroundColor = sparkColor; 
-
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 50 + Math.random() * 50; 
-        const sparkX = Math.cos(angle) * distance;
-        const sparkY = Math.sin(angle) * distance;
-
-        spark.style.setProperty('--spark-x', sparkX + 'px');
-        spark.style.setProperty('--spark-y', sparkY + 'px');
-        spark.style.setProperty('--spark-duration', (0.8 + Math.random() * 0.7) + 's'); 
-
-        spark.style.left = '50%';
-        spark.style.top = '50%';
-        spark.style.transform = 'translate(-50%, -50%)'; 
-
-        firework.appendChild(spark); 
-        
-        spark.addEventListener('animationend', () => {
-            spark.remove();
-        });
-    }
+    // ĐÃ XÓA VÒNG LẶP TẠO TIA SÁNG (firework-spark)
 
     firework.addEventListener('animationend', () => {
         firework.remove();
     });
 }
 
-// Hàm tạo một bông hoa (4 cánh)
+// Hàm tạo một bông hoa (4 cánh) (Giữ nguyên)
 function createFlower() {
     const flower = document.createElement('div');
     flower.classList.add('flower');
@@ -131,7 +134,7 @@ function createFlower() {
     });
 }
 
-// Hàm tạo một cánh hoa
+// Hàm tạo một cánh hoa (Giữ nguyên)
 function createPetal() {
     const petal = document.createElement('div');
     petal.classList.add('petal');
@@ -175,9 +178,9 @@ triggerLink.addEventListener('click', function(event) {
     for (let i = 0; i < initialHearts; i++) {
         setTimeout(createHeart, i * 150); 
     }
-    const initialFireworks = 40; 
+    const initialFireworks = 20; // Giảm pháo hoa ban đầu
     for (let i = 0; i < initialFireworks; i++) {
-        setTimeout(createFirework, i * 100);
+        setTimeout(createFirework, i * 150); // Thưa ra
     }
     const initialFlowers = 25;
     for (let i = 0; i < initialFlowers; i++) {
@@ -187,10 +190,17 @@ triggerLink.addEventListener('click', function(event) {
     for (let i = 0; i < initialPetals; i++) {
         setTimeout(createPetal, i * 200);
     }
+    // Thêm trái tim trôi ban đầu
+    const initialDriftingHearts = 15;
+    for (let i = 0; i < initialDriftingHearts; i++) {
+        setTimeout(createDriftingHeart, i * 300);
+    }
 
-    // Tạo liên tục
-    setInterval(createHeart, 300); 
-    setInterval(createFirework, 150); // Tần suất pháo hoa cao
-    setInterval(createFlower, 500); 
-    setInterval(createPetal, 350);
+
+    // Tạo liên tục (TĂNG TIM, GIẢM PHÁO HOA)
+    setInterval(createHeart, 300); // Tăng tim "nở"
+    setInterval(createDriftingHeart, 450); // Thêm tim "trôi"
+    setInterval(createFirework, 800); // Giảm pháo hoa
+    setInterval(createFlower, 600); 
+    setInterval(createPetal, 450);
 });
